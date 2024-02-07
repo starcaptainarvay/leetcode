@@ -32,7 +32,7 @@ template <typename S> ostream& operator<<(ostream& os, const vector<S>& vector) 
 
 class Solution {
     public:
-        static void count_sort(vector<int> arr, int n, int power)
+        static void count_sort(vector<int>& arr, int n, int power)
         {
             // Initialize output array
             int out[n];
@@ -65,21 +65,14 @@ class Solution {
         static void radix_sort(vector<int>& arr) {
             int max = 0;
 
-            cout << arr << endl;
-
             for (int i=0;i<arr.size();i++) {
-                //cout << "(" << i << ", " << arr[i] << ") ";
                 if (arr[i] > max)
                     max = arr[i];
             }
 
-            printf("Max %d\n", max);
-
             for (int exp=1; max/exp > 0; exp*=10) {
                 count_sort(arr, arr.size(), exp);
             }
-
-            printf("Sorted");
         }
 
         vector<vector<int>> divideArray(const vector<int>& nums, int k) {
@@ -90,7 +83,7 @@ class Solution {
             // Shallow copy of input array
             vector<int> sorted(nums);
             Solution::radix_sort(sorted);
-            
+
             for (int i=0;i<sorted.size();i+=3) {
                 vector<int> group = {};
 
@@ -123,14 +116,12 @@ int main() {
     char comma;
     
     while (input_data >> a) {
-        printf("%d ", a);
         input_vector_massive.push_back(a);
         input_data >> comma;
     }
 
     getchar();
    
-    cout << input_vector_massive << endl;
     vector<vector<int>> v = s->divideArray(input_vector_massive, 79610);
 
     cout << v << endl;
