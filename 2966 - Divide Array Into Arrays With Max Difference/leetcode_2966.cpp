@@ -88,7 +88,7 @@ class Solution {
                 vector<int> group = {};
 
                 for (int j=0;j<3;j++) {
-                    group.push_back(sorted[i]);
+                    group.push_back(sorted[i+j]);
                 }
 
                 const int max_diff = abs(group[2] - group[0]); // max difference in group
