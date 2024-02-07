@@ -1,7 +1,9 @@
 #include <iostream>
+#include <ios>
 #include <vector>
 #include <cmath>
 #include <algorithm>
+#include <fstream>
 
 using namespace std;
 
@@ -30,61 +32,107 @@ template <typename S> ostream& operator<<(ostream& os, const vector<S>& vector) 
 
 class Solution {
     public:
-        vector<vector<int>> divideArray(const vector<int>& nums, int k) {
-            vector<vector<int>> out = {};
-          
-            // Shallow copy of input array
-            vector<int> sorted = nums;
-            sort(sorted.begin(), sorted.end());
+        static void count_sort(vector<int> arr, int n, int power)
+        {
+            // Initialize output array
+            int out[n];
+            int i, count[10] = { 0 };
 
-            for (auto element: sorted) {
-                bool appended = false;
+            // Store count of occurrences
+            // in count[]
+            for (i = 0; i < n; i++)
+                count[(arr[i] / power) % 10]++;
 
-                // Check existing arrays if there's space for the new element
-                for (int i=0; i<out.size();i++) {
-                    vector<int> array = out[i];
+            // Change count[i] so that count[i]
+            // now contains actual position
+            // of this digit in output[]
+            for (i = 1; i < 10; i++)
+                count[i] += count[i - 1];
 
-                    if (array.size() < 3) {
-                        bool okay = true;
-
-                        for (auto e: array) {
-                            //Validate difference
-                            if (abs(element - e) > k) {
-                                okay = false;
-                                break;
-                            }
-                        }
-
-                        if (okay) {
-                            out[i].push_back(element);
-                            appended = true;
-                            break;
-                        }
-                    }
-                }
-
-                if (!appended) {
-                    vector<int> temp = {element};
-                    out.push_back(temp);
-                }
+            // Build the output array
+            for (i = n - 1; i >= 0; i--) {
+                out[count[(arr[i] / power) % 10] - 1] = arr[i];
+                count[(arr[i] / power) % 10]--;
             }
 
-            // Interrupt result if doesn't meet perfect conditions
-            for (auto check: out) {
-                if (check.size() < 3) {
-                    vector<vector<int>> breakout = {};
-                    return breakout;
+            // Copy the output array to arr[],
+            // so that arr[] now contains sorted
+            // numbers according to current digit
+            for (i = 0; i < n; i++)
+                arr[i] = out[i];
+        }
+
+        static void radix_sort(vector<int>& arr) {
+            int max = 0;
+
+            cout << arr << endl;
+
+            for (int i=0;i<arr.size();i++) {
+                //cout << "(" << i << ", " << arr[i] << ") ";
+                if (arr[i] > max)
+                    max = arr[i];
+            }
+
+            printf("Max %d\n", max);
+
+            for (int exp=1; max/exp > 0; exp*=10) {
+                count_sort(arr, arr.size(), exp);
+            }
+
+            printf("Sorted");
+        }
+
+        vector<vector<int>> divideArray(const vector<int>& nums, int k) {
+            vector<vector<int>> out = {};
+
+            if (nums.size() % 3 != 0) return out;
+
+            // Shallow copy of input array
+            vector<int> sorted(nums);
+            Solution::radix_sort(sorted);
+            
+            for (int i=0;i<sorted.size();i+=3) {
+                vector<int> group = {};
+
+                for (int j=0;j<3;j++) {
+                    group.push_back(sorted[i]);
                 }
+
+                const int max_diff = abs(group[2] - group[0]); // max difference in group
+                if (max_diff > k) {
+                    //Interrupt function because result is now invalid
+                    out = {};
+                    return out;
+                } else
+                    out.push_back(group);
             }
 
             return out;
         }
 };
 
+
 int main() {
     Solution* s = new Solution;
-    vector<vector<int>> v = s->divideArray({1, 3, 4, 8, 7, 9, 3, 5, 1}, 2);
+    fstream input_data("./data.txt", ios_base::in);
     
+    //vector<vector<int>> v = s->divideArray({1, 3, 4, 8, 7, 9, 3, 5, 1}, 2);
+    vector<int> input_vector_massive = {};
+
+    int a;
+    char comma;
+    
+    while (input_data >> a) {
+        printf("%d ", a);
+        input_vector_massive.push_back(a);
+        input_data >> comma;
+    }
+
+    getchar();
+   
+    cout << input_vector_massive << endl;
+    vector<vector<int>> v = s->divideArray(input_vector_massive, 79610);
+
     cout << v << endl;
     return 0;
 }
