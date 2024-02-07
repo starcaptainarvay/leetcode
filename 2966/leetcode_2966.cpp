@@ -19,7 +19,9 @@ template <typename S> ostream& operator<<(ostream& os, const vector<S>& vector) 
     return os;
 }
 
-/* 
+/*
+ * "Divide Array Into Arrays With Max Difference" - SOLVED
+ *
  * You are given an integer array nums of size n and a positive integer k.
  *
  * Divide the array into one or more arrays of size 3 satisfying the following conditions:
