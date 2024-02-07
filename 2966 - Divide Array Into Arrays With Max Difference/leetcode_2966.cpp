@@ -69,6 +69,14 @@ class Solution {
                 }
             }
 
+            // Interrupt result if doesn't meet perfect conditions
+            for (auto check: out) {
+                if (check.size() < 3) {
+                    vector<vector<int>> breakout = {};
+                    return breakout;
+                }
+            }
+
             return out;
         }
 };
